@@ -1,0 +1,24 @@
+unit uItemStock.Model.Interfaces;
+
+interface
+
+type
+  IItem = interface;
+
+  IStockItem = interface
+    ['{80A3C948-C6C0-4F01-B586-230ED284266A}']
+    function MyItens : IItem;
+  end;
+
+  IItem = interface
+    ['{9CD8799D-22D7-4232-B8BB-766100C3C75D}']
+
+  end;
+
+  ITypeItens = interface
+    ['{9CDA3C38-DFB9-44EA-B711-716D727274F4}']
+  end;
+
+implementation
+
+end.

@@ -1,0 +1,20 @@
+unit uItemStock.Controller.PersistentData;
+
+interface
+
+uses uItemStock.Controller.Interfaces, FireDAC.Comp.Client,
+  uItemStock.Dao.DataModule;
+
+  type
+    TPersistentDataControll = class(TInterfacedObject, IPersistentData)
+    private
+      Query : TFDQuery;
+    public
+      constructor Create;
+      destructor Destroy;override;
+      function GetDataPersistent : TFDQuery;
+    end;
+
+implementation
+
+end.

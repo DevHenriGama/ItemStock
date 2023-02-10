@@ -1,0 +1,33 @@
+program ItemStock3;
+
+uses
+  System.StartUpCopy,
+  FMX.Forms,
+  ItemStock.View.Main in 'view\ItemStock.View.Main.pas' {frmMain},
+  ItemStock.View.Stock in 'view\ItemStock.View.Stock.pas' {frmStock},
+  ItemStock.Frames.ItemRow in 'view\Frames\ItemStock.Frames.ItemRow.pas' {frameRow: TFrame},
+  uItemStock.Controller.Classitem in 'controller\uItemStock.Controller.Classitem.pas',
+  uItemStock.Controller.ClassStock in 'controller\uItemStock.Controller.ClassStock.pas',
+  uItemStock.Controller.ClassType in 'controller\uItemStock.Controller.ClassType.pas',
+  uItemStock.Controller.ControllViewData in 'controller\uItemStock.Controller.ControllViewData.pas',
+  uItemStock.Controller.Interfaces in 'controller\uItemStock.Controller.Interfaces.pas',
+  uItemStock.Controller.Settings in 'controller\uItemStock.Controller.Settings.pas',
+  uItemStock.Model.ClassItem in 'model\uItemStock.Model.ClassItem.pas',
+  uItemStock.Model.ClassType in 'model\uItemStock.Model.ClassType.pas',
+  uItemStock.Model.Interfaces in 'model\uItemStock.Model.Interfaces.pas',
+  uItemStock.Model.ClassSettings in 'model\Settings\uItemStock.Model.ClassSettings.pas',
+  uItemStock.Model.InterfaceSettings in 'model\Settings\uItemStock.Model.InterfaceSettings.pas',
+  uItemStock.Dao.Instruction in 'dao\uItemStock.Dao.Instruction.pas',
+  uItemStock.Dao.Interfaces in 'dao\uItemStock.Dao.Interfaces.pas',
+  uItemStock.Dao.TypeInstuction in 'dao\uItemStock.Dao.TypeInstuction.pas',
+  uItemStock.Dao.DataModule in 'dao\uItemStock.Dao.DataModule.pas' {dmDados: TDataModule},
+  uItemStock.Utils.SysUtils in 'utils\uItemStock.Utils.SysUtils.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TdmDados, dmDados);
+  Application.Run;
+end.

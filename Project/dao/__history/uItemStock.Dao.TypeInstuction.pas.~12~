@@ -1,0 +1,116 @@
+unit uItemStock.Dao.TypeInstuction;
+
+interface
+
+
+uses uItemStock.Dao.Interfaces,uItemStock.Dao.DataModule, FireDAC.Comp.Client,
+  uItemStock.Model.ClassType;
+
+
+  type
+
+  TDAOTypesInstructon = class(TInterfacedObject,IDAOTypesInstruction)
+    private
+        _data : TdmDados;
+        FQuery : TFDQuery;
+        Connection : TFDConnection;
+        Types : TTypesModel;
+    public
+      constructor Create(TypesModel : TTypesModel);
+      destructor Destroy;Override;
+      function NewType : Boolean;
+      function EditType : Boolean;
+      function DeleteType : Boolean;
+      function GetDataSet : TFDQuery;
+      procedure SearchType(_Value : String);
+
+
+  end;
+
+implementation
+
+uses System.SysUtils;
+
+
+{ TDAOTypesInstructon }
+
+constructor TDAOTypesInstructon.Create(TypesModel: TTypesModel);
+begin
+  _data := TdmDados.Create(nil);
+  FQuery := TFDQuery.Create(nil);
+  FQuery.Connection := _data.Connection;
+  Types := TypesModel;
+end;
+
+function TDAOTypesInstructon.DeleteType : Boolean;
+begin
+  try
+       with FQuery do begin
+     Close;
+     SQL.Clear;
+     SQL.Add('DELETE FROM ITEM_TYPES WHERE ID = :id');
+     ParamByName('id').AsInteger := Types.GetID;
+     ExecSQL;
+   end;
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+destructor TDAOTypesInstructon.Destroy;
+begin
+   FQuery.Free;
+   _data.Free;
+  inherited;
+end;
+
+function TDAOTypesInstructon.EditType : Boolean;
+begin
+ try
+   with FQuery do begin
+    Close;
+    SQL.Clear;
+    SQL.Add('UPDATE ITEM_TYPES SET TYPE = :ty WHERE ID = :id');
+    ParamByName('ty').AsString  := Types.GetTypes;
+    ParamByName('id').AsInteger := Types.GetID;
+    ExecSQL;
+   end;
+   Result := True;
+ except
+    Result := False;
+ end;
+end;
+
+function TDAOTypesInstructon.GetDataSet: TFDQuery;
+begin
+ Result := _data.queryTypePersitant;
+end;
+
+function TDAOTypesInstructon.NewType: Boolean;
+begin
+  try
+   with FQuery do begin
+    Close;
+    SQL.Clear;
+    SQL.Add('INSERT INTO ITEM_TYPES (TYPE) VALUES (:ty)');
+    ParamByName('ty').AsString  := Types.GetTypes;
+    ExecSQL;
+   end;
+   Result := True;
+ except
+    Result := False;
+ end;
+end;
+
+procedure TDAOTypesInstructon.SearchType(_Value: String);
+begin
+ with _data.queryTypePersitant do begin
+  close;
+  SQL.Clear;
+  SQL.Add('SELET TYPE FROM ITEM_TYPE WHERE TYPE LIKE ' + QuotedStr('%'+_Value+'%'));
+  ExecSQL;
+ end;
+end;
+
+end.

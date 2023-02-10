@@ -1,0 +1,57 @@
+unit ItemStock.View.MessageBox;
+
+interface
+
+uses
+  ItemStock.View.MessageForm;
+
+type
+
+  IMessageBox = interface
+    ['{F0E8516F-4EC9-4901-ACEE-CDF46428815B}']
+    procedure ShowInformationMSG(Msg: String);
+    function ShowDecisionMSG(Msg: String): Boolean;
+  end;
+
+  TConcreteMSBox = class(TInterfacedObject, IMessageBox)
+  private
+    FMSGbox: TMessageBox;
+  public
+    class function NewMessage : IMessageBox;
+    constructor Create;
+    destructor Destroy; override;
+    procedure ShowInformationMSG(Msg: String);
+    function ShowDecisionMSG(Msg: String): Boolean;
+  end;
+
+implementation
+
+{ TConcreteMSBox }
+
+constructor TConcreteMSBox.Create;
+begin
+FMSGbox := TMessageBox.Create(NIL);
+end;
+
+destructor TConcreteMSBox.Destroy;
+begin
+   FMSGbox.Free;
+  inherited;
+end;
+
+class function TConcreteMSBox.NewMessage: IMessageBox;
+begin
+ Result := Self.Create;
+end;
+
+function TConcreteMSBox.ShowDecisionMSG(Msg: String): Boolean;
+begin
+  Result := FMSGbox.ShowDecisionMSG(Msg);
+end;
+
+procedure TConcreteMSBox.ShowInformationMSG(Msg: String);
+begin
+FMSGbox.ShowInformationMSG(Msg);
+end;
+
+end.

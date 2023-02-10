@@ -1,0 +1,50 @@
+unit uItemStock.Dao.DataModule;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.FMXUI.Wait,
+  Data.DB, FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.DatS,
+  FireDAC.DApt.Intf, FireDAC.DApt, FireDAC.Comp.DataSet,
+  uItemStock.Dao.Interfaces, FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef,
+  FireDAC.Stan.ExprFuncs, FireDAC.Phys.SQLiteWrapper.Stat, FireDAC.Comp.UI,
+  FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.Phys.IBBase;
+
+type
+  TdmDados = class(TDataModule)
+    Connection: TFDConnection;
+    queryDataPersistent: TFDQuery;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    queryTypePersitant: TFDQuery;
+    FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink;
+    FDPhysFBDriverLink1: TFDPhysFBDriverLink;
+    procedure ConnectionBeforeConnect(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  dmDados: TdmDados;
+
+implementation
+
+uses
+  Vcl.Forms;
+{%CLASSGROUP 'FMX.Controls.TControl'}
+
+{$R *.dfm}
+
+{ TdmDados }
+procedure TdmDados.ConnectionBeforeConnect(Sender: TObject);
+var Path : String;
+begin
+ Path := ExtractFilePath(Application.ExeName) + 'database\ITEMSTOCKDB.FDB';
+ Connection.Params.Database := Path;
+
+end;
+
+end.

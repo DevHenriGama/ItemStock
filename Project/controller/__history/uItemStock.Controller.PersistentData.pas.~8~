@@ -1,0 +1,38 @@
+unit uItemStock.Controller.PersistentData;
+
+interface
+
+uses
+  FireDAC.Comp.Client, uItemStock.Dao.DataModule;
+  type
+    TPesistentData = class
+
+    private
+
+    public
+      constructor Create;
+      destructor Destroy;override;
+      function GetDataSet : TFDQuery;
+    end;
+
+implementation
+
+{ TPesistentData }
+
+constructor TPesistentData.Create;
+begin
+
+end;
+
+destructor TPesistentData.Destroy;
+begin
+
+  inherited;
+end;
+
+function TPesistentData.GetDataSet: TFDQuery;
+begin
+
+end;
+
+end.

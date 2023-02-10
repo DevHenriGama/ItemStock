@@ -1,0 +1,42 @@
+unit uItemStock.Controller.PersistentData;
+
+interface
+
+uses
+  FireDAC.Comp.Client, uItemStock.Dao.DataModule, uItemStock.Dao.Instruction;
+  type
+    TControllViewData = class
+
+    private
+       _Dataset : TFDQuery;
+       DAO : TDaoIntructions;
+    public
+      constructor Create;
+      destructor Destroy;override;
+      function GetDataSet : TFDQuery;
+      procedure SearchData;
+    end;
+
+implementation
+
+{ TControllViewData }
+
+constructor TControllViewData.Create;
+begin
+  DAO := TDaoIntructions.Create;
+  _Dataset := DAO.PersitentData;
+end;
+
+destructor TControllViewData.Destroy;
+begin
+   DAO.Free;
+  inherited;
+end;
+
+function TControllViewData.GetDataSet: TFDQuery;
+begin
+ Result := _Dataset;
+end;
+
+
+end.

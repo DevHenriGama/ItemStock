@@ -1,0 +1,25 @@
+unit uItemStock.Dao.DataModule;
+
+interface
+
+uses
+  System.SysUtils, System.Classes;
+
+type
+  TdmDados = class(TDataModule)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  dmDados: TdmDados;
+
+implementation
+
+{%CLASSGROUP 'FMX.Controls.TControl'}
+
+{$R *.dfm}
+
+end.

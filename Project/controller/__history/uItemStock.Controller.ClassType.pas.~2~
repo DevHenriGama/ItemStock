@@ -1,0 +1,38 @@
+unit uItemStock.Controller.ClassType;
+
+interface
+
+uses uItemStock.Controller.Interfaces;
+
+type
+  TControllTypes = class(TInterfacedObject , IControllTypes)
+
+  private
+    FTypes: String;
+    FID: Integer;
+    procedure SetID(const Value: Integer);
+    procedure SetTypes(const Value: String);
+
+  public
+    property ID : Integer read FID write SetID;
+    property Types : String read FTypes write SetTypes;
+    procedure New;
+    procedure Edit;
+    procedure Delete;
+  end;
+
+implementation
+
+{ TControllTypes }
+
+procedure TControllTypes.SetID(const Value: Integer);
+begin
+  FID := Value;
+end;
+
+procedure TControllTypes.SetTypes(const Value: String);
+begin
+  FTypes := Value;
+end;
+
+end.

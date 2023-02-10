@@ -1,0 +1,12 @@
+unit uItemStock.Model.TTypeItens;
+
+interface
+
+  type
+    TTypeItens = class
+
+    end;
+
+implementation
+
+end.

@@ -1,0 +1,22 @@
+unit uItemStock.Model.ClassType;
+
+interface
+
+  type
+    TTypesModel = class(TInterfacedObject,iTypesModel)
+
+    private
+      FID : Integer;
+      FType : String;
+    public
+      class function New : iTypesModel;
+      function ID(_Value : Integer) : iTypesModel;
+      function Type(_Value : String) : iTypesModel;
+      constructor Create;
+      destructor Destroy; Override;
+
+    end;
+
+implementation
+
+end.

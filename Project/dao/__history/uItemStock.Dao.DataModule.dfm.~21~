@@ -1,0 +1,44 @@
+object dmDados: TdmDados
+  Height = 489
+  Width = 631
+  PixelsPerInch = 96
+  object Connection: TFDConnection
+    Params.Strings = (
+      
+        'Database=E:\Progama'#231#227'o\Projects\Delphi\Item Stock v2\ItemStockv2' +
+        '\Win32\Debug\database\ITEMSTOCKDB.FDB'
+      'User_Name=SYSDBA'
+      'Password=masterkey'
+      'DriverID=FB')
+    Connected = True
+    LoginPrompt = False
+    BeforeConnect = ConnectionBeforeConnect
+    Left = 176
+    Top = 160
+  end
+  object queryDataPersistent: TFDQuery
+    Connection = Connection
+    Left = 176
+    Top = 240
+  end
+  object FDGUIxWaitCursor1: TFDGUIxWaitCursor
+    Provider = 'FMX'
+    Left = 152
+    Top = 48
+  end
+  object queryTypePersitant: TFDQuery
+    Connection = Connection
+    SQL.Strings = (
+      'SELECT * FROM ITEM_TYPES')
+    Left = 400
+    Top = 248
+  end
+  object FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink
+    Left = 408
+    Top = 128
+  end
+  object FDPhysFBDriverLink1: TFDPhysFBDriverLink
+    Left = 544
+    Top = 128
+  end
+end

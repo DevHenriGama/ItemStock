@@ -1,0 +1,28 @@
+unit uItemStock.Dao.Interfaces;
+interface
+uses
+  FireDAC.Comp.Client, System.JSON, System.Classes;
+
+  type
+
+    TItemValues = Record
+    ID , Container : Integer;
+    ItemName, State , Description, TypeItem : String;
+  End;
+
+  IDaoInstruction = interface
+    ['{9346DA1C-07D5-4528-AA77-E9B53CA0405D}']
+     procedure InsertItem;
+     procedure UpdateItem;
+     procedure DeleteItem;
+     procedure  SerchInDatabase(_Value , SB_By : String);
+     function SearchBY(_Value , Column : String) : TJSONObject;
+     function GetValuesByID(_ID : Integer) : TItemValues;
+     function PersitentData : TFDQuery;
+     function GetData : TJSONObject;
+     procedure ListAll;
+  end;
+
+implementation
+
+end.

@@ -1,0 +1,109 @@
+unit uItemStock.Model.ClassSettings;
+
+interface
+
+uses
+  uItemStock.Model.InterfaceSettings,
+  uItemStock.Controller.Settings,
+  IniFiles;
+
+    type
+
+      TModelSettings = class(TInterfacedObject, IModelSettings)
+        Private
+          FSettingsFile : TIniFile;
+          FSettings : TControllSettings;
+          procedure ProcessFileSettings;
+
+        public
+          constructor Create(Settings : TControllSettings);
+          destructor Destroy;override;
+          function StartOnSys : Boolean; overload;
+          procedure StartOnSys(_Start : Boolean); overload;
+          function StartMinimized : Boolean;
+          procedure StartMinimize(_Start : Boolean);
+          function PortAPI : String; Overload;
+          procedure PortAPI(_ValuePort : String);Overload;
+          function StartAutoAPI : Boolean; overload;
+          procedure StartAutoAPI(_Start : Boolean);overload;
+      end;
+
+
+implementation
+
+uses
+  System.SysUtils, Vcl.Forms;
+
+{ TModelSettings }
+
+constructor TModelSettings.Create(Settings : TControllSettings);
+begin
+  FSettings := Settings;
+ ProcessFileSettings;
+end;
+
+destructor TModelSettings.Destroy;
+begin
+   FSettingsFile.Free;
+  inherited;
+end;
+
+procedure TModelSettings.PortAPI(_ValuePort: String);
+begin
+
+end;
+
+procedure TModelSettings.ProcessFileSettings;
+var SettingsFile : String;
+begin
+  SettingsFile := ExtractfilePath(Application.ExeName + '/Settings.ini');
+  FSettingsFile := TIniFile.Create(SettingsFile);
+
+
+  if not FileExists(SettingsFile) then begin
+    with FSettingsFile do begin
+      WriteString('GENERAL','StartOnSystem','False');
+      WriteString('GENERAL','StartMinimized','False');
+      WriteString('API','Port','8082');
+      WriteString('API','AutoStart','False');
+    end;
+  end;
+
+end;
+
+function TModelSettings.PortAPI: String;
+begin
+
+end;
+
+procedure TModelSettings.StartAutoAPI(_Start: Boolean);
+begin
+
+end;
+
+function TModelSettings.StartAutoAPI: Boolean;
+begin
+
+end;
+
+procedure TModelSettings.StartMinimize(_Start: Boolean);
+begin
+
+end;
+
+function TModelSettings.StartMinimized: Boolean;
+begin
+
+end;
+
+function TModelSettings.StartOnSys: Boolean;
+begin
+
+end;
+
+procedure TModelSettings.StartOnSys(_Start: Boolean);
+begin
+
+end;
+
+end.

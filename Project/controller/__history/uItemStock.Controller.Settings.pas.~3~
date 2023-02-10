@@ -1,0 +1,45 @@
+unit uItemStock.Controller.Settings;
+
+interface
+   uses uItemStock.Controller.Interfaces;
+
+  type
+  TControllSettings = class(TInterfacedObject,IControllSettings)
+    private
+       FStartOnSys : Boolean;
+       FStartMinimized : Boolean;
+       FPort : String;
+       FStartAPI : Boolean;
+    public
+      class function New  :
+      function SetStartOnSys(_Value : Boolean) : IControllSettings;
+      function Get
+
+
+
+
+
+
+      function StartOnSys : Boolean; overload;
+      procedure StartOnSys(_Start : Boolean); overload;
+      function StartMinimized : Boolean;
+      procedure StartMinimize(_Start : Boolean);
+      function PortAPI : String; Overload;
+      procedure PortAPI(_ValuePort : String);Overload;
+      function StartAutoAPI : Boolean; overload;
+      procedure StartAutoAPI(_Start : Boolean);overload;
+      procedure Process;
+  end;
+
+implementation
+
+
+
+{ TControllSettings }
+
+
+{ TControllSettings }
+
+
+
+end.

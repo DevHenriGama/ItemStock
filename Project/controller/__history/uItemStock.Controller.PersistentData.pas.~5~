@@ -1,0 +1,49 @@
+unit uItemStock.Controller.PersistentData;
+
+interface
+
+uses uItemStock.Controller.Interfaces,
+  uItemStock.Dao.DataModule;
+
+  type
+    TPersistentDataControll = class(TInterfacedObject, IPersistentData)
+    private
+      Query : TFDQuery;
+      Connection : TFDConnection;
+    public
+      constructor Create;
+      destructor Destroy;override;
+      function GetDataPersistent : TFDQuery;
+    end;
+
+implementation
+
+uses
+  FireDAC.Comp.Client;
+
+{ TPersistentDataControll }
+
+constructor TPersistentDataControll.Create;
+begin
+ Query := TFDQuery.Create(nil);
+end;
+
+destructor TPersistentDataControll.Destroy;
+begin
+   Query.Free;
+  inherited;
+end;
+
+function TPersistentDataControll.GetDataPersistent: TFDQuery;
+begin
+ with Query do begin
+   Close;
+   SQL.Clear;
+   SQL.Add('SELECT * FROM ITENS');
+   Open;
+ end;
+
+ Result := Query;
+end;
+
+end.

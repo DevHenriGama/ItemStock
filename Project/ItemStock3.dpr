@@ -1,0 +1,24 @@
+program ItemStock3;
+
+uses
+  System.StartUpCopy,
+  FMX.Forms,
+  ItemStock.View.Main in 'view\ItemStock.View.Main.pas' {frmMain},
+  ItemStock.View.Stock in 'view\ItemStock.View.Stock.pas' {frmStock},
+  ItemStock.Frames.ItemRow in 'view\Frames\ItemStock.Frames.ItemRow.pas' {frameRow: TFrame},
+  uItemStock.Controller.Classitem in 'controller\uItemStock.Controller.Classitem.pas',
+  uItemStock.Controller.Interfaces in 'controller\uItemStock.Controller.Interfaces.pas',
+  uItemStock.Model.ClassItem in 'model\uItemStock.Model.ClassItem.pas',
+  uItemStock.Dao.Instruction in 'dao\uItemStock.Dao.Instruction.pas',
+  uItemStock.Dao.Interfaces in 'dao\uItemStock.Dao.Interfaces.pas',
+  uItemStock.Dao.DataModule in 'dao\uItemStock.Dao.DataModule.pas' {dmDados: TDataModule},
+  ItemStock.View.MessageForm in 'view\ItemStock.View.MessageForm.pas' {MessageBox},
+  ItemStock.View.MessageBox in 'view\ItemStock.View.MessageBox.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TfrmMain, frmMain);
+  Application.Run;
+end.

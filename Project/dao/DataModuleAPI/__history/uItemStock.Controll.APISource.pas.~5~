@@ -1,0 +1,71 @@
+unit uItemStock.Controll.APISource;
+
+interface
+
+uses
+  System.SysUtils, System.Classes,UDWDataModule, uDWAbout, uRESTDWServerEvents,
+  uDWJSONObject, uItemStock.Controller.Interfaces,uItemStock.Controller.ClassStock;
+
+type
+  TApiData = class(TServerMethodDataModule)
+    EventsMain: TDWServerEvents;
+    procedure EventsMainEventsstatusReplyEvent(var Params: TDWParams;
+      var Result: string);
+    procedure ServerMethodDataModuleCreate(Sender: TObject);
+    procedure EventsMainEventsnewReplyEvent(var Params: TDWParams;
+      var Result: string);
+  private
+    { Private declarations }
+    IStock : IControllerStock;
+  public
+    { Public declarations }
+
+  end;
+
+var
+  ApiData: TApiData;
+
+implementation
+
+uses System.JSON;
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+
+{$R *.dfm}
+
+procedure TApiData.EventsMainEventsnewReplyEvent(var Params: TDWParams;
+  var Result: string);
+  var jObject : TJSONObject;
+begin
+  jObject := TJSONObject.Create;
+ try
+   IStock.
+   StockItem.
+    ID(0).
+    Item(Params[0].ToString).
+    State(Params[1].ToString).
+    Description(Params[2].ToString).
+    Container(StrToInt(Params[3].ToString)).
+    TypeItem(Params[4].ToString).
+    Add;
+    jObject.AddPair('request_status','ok');
+ except
+    jObject.AddPair('request_status','erro');
+ end;
+ Result := jObject.ToString;
+ jObject.Free;
+end;
+
+procedure TApiData.EventsMainEventsstatusReplyEvent(var Params: TDWParams;
+  var Result: string);
+begin
+ Result := '{"status":OK}';
+end;
+
+procedure TApiData.ServerMethodDataModuleCreate(Sender: TObject);
+begin
+IStock := TControllerStock.Create;
+end;
+
+end.

@@ -1,0 +1,119 @@
+unit ItemStock.View.MessageForm;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes,
+  System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
+  FMX.Layouts, FMX.TabControl, FMX.Controls.Presentation, FMX.StdCtrls;
+
+type
+  IMessageBox = interface
+    ['{F0E8516F-4EC9-4901-ACEE-CDF46428815B}']
+    procedure ShowInformationMSG(Msg: String);
+    function ShowDecisionMSG(Msg: String) : Boolean;
+  end;
+
+  TConcreteMSBox = class(TInterfacedObject, IMessageBox)
+  private
+
+  public
+    constructor Create;
+    destructor Destroy;override;
+     procedure ShowInformationMSG(Msg: String);
+    function ShowDecisionMSG(Msg: String) : Boolean;
+  end;
+
+  TMessageBox = class(TForm)
+    recBackground: TRectangle;
+    ltTop: TLayout;
+    Layout2: TLayout;
+    ltButtons: TLayout;
+    imgClose: TImage;
+    recBaseMsg: TRectangle;
+    msgInfo: TText;
+    tabButtons: TTabControl;
+    StyleBook1: TStyleBook;
+    TabInfo: TTabItem;
+    tabDecision: TTabItem;
+    recBaseButton: TRectangle;
+    btnOK: TButton;
+    Layout1: TLayout;
+    Rectangle2: TRectangle;
+    Button2: TButton;
+    Rectangle1: TRectangle;
+    Button1: TButton;
+    procedure imgCloseClick(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
+    procedure ltTopMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Single);
+  private
+    { Private declarations }
+    FDecisionValue : Boolean;
+  public
+    destructor Destroy;override;
+    procedure ShowInformationMSG(Msg: String);
+    function ShowDecisionMSG(Msg: String) : Boolean;
+
+  end;
+
+var
+  MessageBox: TMessageBox;
+
+implementation
+
+{$R *.fmx}
+
+procedure TMessageBox.btnOKClick(Sender: TObject);
+begin
+Self.Close;
+end;
+
+procedure TMessageBox.Button1Click(Sender: TObject);
+begin
+FDecisionValue := False;
+Self.CloseModal;
+end;
+
+procedure TMessageBox.Button2Click(Sender: TObject);
+begin
+FDecisionValue := True;
+Self.CloseModal;
+end;
+
+destructor TMessageBox.Destroy;
+begin
+
+  inherited;
+end;
+
+procedure TMessageBox.imgCloseClick(Sender: TObject);
+begin
+  Self.CloseModal;
+end;
+
+procedure TMessageBox.ltTopMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+Self.StartWindowDrag;
+end;
+
+procedure TMessageBox.ShowInformationMSG(Msg: String);
+begin
+  msgInfo.Text := Msg;
+  tabButtons.TabIndex := 0;
+  Self.Show;
+end;
+
+function TMessageBox.ShowDecisionMSG(Msg: String): Boolean;
+begin
+   msgInfo.Text := Msg;
+  tabButtons.TabIndex := 1;
+  MessageBox.ShowModal;
+  Result := FDecisionValue;
+end;
+
+end.

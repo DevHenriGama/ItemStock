@@ -1,0 +1,139 @@
+unit uItemStock.Model.ClassSettings;
+
+interface
+
+uses
+  uItemStock.Model.InterfaceSettings,
+  uItemStock.Controller.Settings,
+  IniFiles;
+
+    type
+
+      TModelSettings = class(TInterfacedObject, IModelSettings)
+        Private
+          FSettingsFile : TIniFile;
+          procedure ProcessFileSettings;
+
+        public
+          constructor Create;
+          destructor Destroy;override;
+          function StartOnSys : Boolean; overload;
+          procedure StartOnSys(_Start : Boolean); overload;
+          function StartMinimized : Boolean;
+          procedure StartMinimize(_Start : Boolean);
+          function PortAPI : String; Overload;
+          procedure PortAPI(_ValuePort : String);Overload;
+          function StartAutoAPI : Boolean; overload;
+          procedure StartAutoAPI(_Start : Boolean);overload;
+      end;
+
+
+implementation
+
+uses
+  System.SysUtils, Vcl.Forms;
+
+{ TModelSettings }
+
+constructor TModelSettings.Create;
+begin
+ ProcessFileSettings;
+end;
+
+destructor TModelSettings.Destroy;
+begin
+   FSettingsFile.Free;
+  inherited;
+end;
+
+procedure TModelSettings.PortAPI(_ValuePort: String);
+begin
+   try
+    FSettingsFile.WriteString('API','Port',_ValuePort);
+   except
+    raise Exception.Create('Erro ao alterar porta da API');
+   end;
+end;
+
+procedure TModelSettings.ProcessFileSettings;
+var SettingsFile : String;
+begin
+  SettingsFile := ExtractfilePath(Application.ExeName ) + 'Settings.ini';
+  FSettingsFile := TIniFile.Create(SettingsFile);
+
+
+  if not FileExists(SettingsFile) then begin
+    with FSettingsFile do begin
+      WriteString('GENERAL','StartOnSystem','False');
+      WriteString('GENERAL','StartMinimized','False');
+      WriteString('API','Port','8082');
+      WriteString('API','AutoStart','False');
+    end;
+  end;
+
+end;
+
+function TModelSettings.PortAPI: String;
+begin
+  try
+     Result := FSettingsFile.ReadString('API','Port','');
+  except
+   raise Exception.Create('Erro na Leita da Porta da API');
+  end;
+end;
+
+procedure TModelSettings.StartAutoAPI(_Start: Boolean);
+begin
+ try
+  FSettingsFile.WriteString('API','AutoStart',BoolToStr(_Start));
+ except
+  raise Exception.Create('Erro na alteração de configuração');
+ end;
+end;
+
+function TModelSettings.StartAutoAPI: Boolean;
+begin
+ try
+  Result := StrToBool(FSettingsFile.ReadString('API','AutoStart',''));
+ except
+  raise Exception.Create('Erro na Leitura do Arquivo');
+ end;
+end;
+
+procedure TModelSettings.StartMinimize(_Start: Boolean);
+begin
+ try
+   FSettingsFile.WriteString('GENERAL','StartMinimized',BoolToStr(_Start));
+ except
+  raise Exception.Create('Falha la leitura do arquivo');
+ end;
+end;
+
+function TModelSettings.StartMinimized: Boolean;
+begin
+  try
+   Result := StrToBool(FSettingsFile.ReadString('GENERAL','StartMinimized',''));
+  except
+   raise Exception.Create('Erro na Leitura do arquivo');
+  end;
+end;
+
+function TModelSettings.StartOnSys: Boolean;
+begin
+ try
+  Result := StrToBool(FSettingsFile.ReadString('GENERAL','StartOnSystem',''));
+ except
+  raise Exception.Create('Erro ao ler arquivo');
+ end;
+end;
+
+procedure TModelSettings.StartOnSys(_Start: Boolean);
+begin
+ try
+  FSettingsFile.WriteString('GENERAL','StartOnSystem',BoolToStr(_Start));
+ except 
+  raise Exception.Create('Erro ao Alterar Arquivo de configuração');
+ end;
+end;
+
+end.

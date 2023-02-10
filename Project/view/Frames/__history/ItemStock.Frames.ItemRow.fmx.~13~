@@ -1,0 +1,109 @@
+object frameRow: TframeRow
+  Align = Top
+  Size.Width = 960.000000000000000000
+  Size.Height = 55.000000000000000000
+  Size.PlatformDefault = False
+  OnPaint = FramePaint
+  object recContent: TRectangle
+    Align = Client
+    Fill.Color = xFF283142
+    Margins.Left = 15.000000000000000000
+    Margins.Top = 5.000000000000000000
+    Margins.Right = 15.000000000000000000
+    Margins.Bottom = 5.000000000000000000
+    Size.Width = 930.000000000000000000
+    Size.Height = 45.000000000000000000
+    Size.PlatformDefault = False
+    Stroke.Thickness = 0.000000000000000000
+    XRadius = 5.000000000000000000
+    YRadius = 5.000000000000000000
+    OnDblClick = recContentDblClick
+    object ItemName: TLabel
+      Align = Left
+      StyledSettings = [Style]
+      Size.Width = 120.000000000000000000
+      Size.Height = 45.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Readex Pro'
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.FontColor = claWhite
+      TextSettings.HorzAlign = Center
+      Text = 'ItemName'
+      TabOrder = 0
+    end
+    object NumBox: TLabel
+      Align = Left
+      StyledSettings = [Style]
+      Position.X = 120.000000000000000000
+      Size.Width = 120.000000000000000000
+      Size.Height = 45.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.Family = 'Readex Pro'
+      TextSettings.Font.Size = 14.000000000000000000
+      TextSettings.FontColor = claWhite
+      TextSettings.HorzAlign = Center
+      Text = 'NumBox'
+      TabOrder = 1
+    end
+    object recBaseType: TRectangle
+      Align = Right
+      Margins.Top = 5.000000000000000000
+      Margins.Right = 40.000000000000000000
+      Margins.Bottom = 5.000000000000000000
+      Position.X = 769.000000000000000000
+      Position.Y = 5.000000000000000000
+      Size.Width = 121.000000000000000000
+      Size.Height = 35.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Thickness = 0.000000000000000000
+      XRadius = 5.000000000000000000
+      YRadius = 5.000000000000000000
+      object ItemType: TLabel
+        Align = Client
+        StyledSettings = [Style]
+        Size.Width = 121.000000000000000000
+        Size.Height = 35.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Readex Pro'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = claWhite
+        TextSettings.HorzAlign = Center
+        Text = 'ItemType'
+        TabOrder = 3
+      end
+    end
+    object recBaseState: TRectangle
+      Align = Left
+      Fill.Color = x00E0E0E0
+      Margins.Left = 80.000000000000000000
+      Position.X = 320.000000000000000000
+      Size.Width = 137.000000000000000000
+      Size.Height = 45.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Thickness = 0.000000000000000000
+      object ItemState: TLabel
+        Align = Left
+        StyledSettings = [Style]
+        Position.X = 50.000000000000000000
+        Size.Width = 120.000000000000000000
+        Size.Height = 45.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.Family = 'Readex Pro'
+        TextSettings.Font.Size = 14.000000000000000000
+        TextSettings.FontColor = claWhite
+        Text = 'ItemState'
+        TabOrder = 2
+      end
+      object clState: TCircle
+        Align = Left
+        Margins.Top = 15.000000000000000000
+        Margins.Bottom = 15.000000000000000000
+        Position.Y = 15.000000000000000000
+        Size.Width = 50.000000000000000000
+        Size.Height = 15.000000000000000000
+        Size.PlatformDefault = False
+        Stroke.Thickness = 0.000000000000000000
+      end
+    end
+  end
+end

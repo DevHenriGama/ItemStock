@@ -1,0 +1,523 @@
+unit ItemStock.View.Stock;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes,
+  System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Layouts,
+  FMX.Objects, FMX.Controls.Presentation, FMX.StdCtrls, FMX.Edit, FMX.EditBox,
+  FMX.NumberBox, FMX.Memo.Types, FMX.ScrollBox, FMX.Memo,
+  ItemStock.Frames.ItemRow, FMX.Ani, uItemStock.Controller.Interfaces,
+  uItemStock.Controller.Classitem, FireDAC.Comp.Client;
+
+type
+  TfrmStock = class(TForm)
+    ltForm: TLayout;
+    recContentInfo: TRectangle;
+    clBase: TCircle;
+    Image1: TImage;
+    Image2: TImage;
+    lblType: TLabel;
+    lblBox: TLabel;
+    lblState: TLabel;
+    lblDescription: TLabel;
+    recBaseContent: TRectangle;
+    edtItemName: TEdit;
+    StyleBook1: TStyleBook;
+    recBaseNumBox: TRectangle;
+    nbBoxIndex: TNumberBox;
+    clNotWork: TCircle;
+    clNotTesting: TCircle;
+    clWorking: TCircle;
+    recBaseDescription: TRectangle;
+    recBaseButtonSave: TRectangle;
+    btnSave: TButton;
+    imgDelete: TImage;
+    ltTopFunctions: TLayout;
+    lblTitle: TLabel;
+    recBaseCombo: TRectangle;
+    recBaseSearch: TRectangle;
+    edtSearch: TEdit;
+    vbListContent: TVertScrollBox;
+    ltListTitles: TLayout;
+    TitleItem: TLabel;
+    TitleBoxNum: TLabel;
+    TitleItemState: TLabel;
+    TitleType: TLabel;
+    imgCloseInfo: TImage;
+    ShowContent: TFloatAnimation;
+    CloseContent: TFloatAnimation;
+    memDescription: TMemo;
+    clPicture: TCircle;
+    imgType: TImage;
+    txAdd: TText;
+    Image3: TImage;
+    recUpdate: TRectangle;
+    procedure imgCloseInfoClick(Sender: TObject);
+    procedure CloseContentFinish(Sender: TObject);
+    procedure ShowContentFinish(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure edtSearchChange(Sender: TObject);
+    procedure edtSearchKeyDown(Sender: TObject; var Key: Word;
+      var KeyChar: Char; Shift: TShiftState);
+    procedure clNotWorkClick(Sender: TObject);
+    procedure clNotTestingClick(Sender: TObject);
+    procedure clWorkingClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
+    procedure Image2Click(Sender: TObject);
+    procedure txAddClick(Sender: TObject);
+    procedure btnSaveClick(Sender: TObject);
+    procedure imgDeleteClick(Sender: TObject);
+    procedure vbListContentPaint(Sender: TObject; Canvas: TCanvas;
+      const ARect: TRectF);
+
+  strict Private
+    Types: Array [0 .. 3] of String;
+    FCrudOperation: Boolean;
+    FStateItem: String;
+    procedure MountTypesArray;
+    function GetTypeItemPos: Integer;
+  private
+    { Private declarations }
+    Classitem: IControllerItem;
+    FItemIDSelected: Integer;
+    procedure LoadInfoItem(_ID: Integer);
+    procedure RowEventClick(_Index: Integer);
+    procedure RenderHeaders;
+    procedure RenderList(QueryToRender: TFDQuery);
+    procedure ClearList;
+    function StateToColor(_State: String): TAlphaColor;
+    function TypeToColor(_Type: String): TAlphaColor;
+    procedure ChangeitemStateColor(Componente: TCircle);
+    procedure SetComponentItemState(State: TCircle);
+    function ItemStateStrToStateComponent(ItemState: String): TCircle;
+    procedure NexType;
+    procedure PreviType;
+    procedure SetImageType(ItemType: String);
+    function isNewOperation: Boolean;
+    procedure SetStateOperation(OPValue: Boolean);
+    procedure ClearFields;
+    procedure UpdateEffect;
+
+  public
+    { Public declarations }
+  end;
+
+var
+  frmStock: TfrmStock;
+
+implementation
+
+uses
+  StrUtils, Winapi.Windows, System.Rtti, ItemStock.View.MessageBox;
+
+{$R *.fmx}
+
+procedure TfrmStock.btnSaveClick(Sender: TObject);
+  function DefaultText(Value: String): String;
+  var
+    NewVal: String;I, X: Integer;
+
+  begin
+     X := Length(Value);
+    NewVal := Copy(Value,0,1);
+    NewVal := NewVal + LowerCase( Copy(Value, 2, X ));
+    Result := NewVal;
+  end;
+
+begin
+  with Classitem do
+  begin
+    ID(FItemIDSelected).Item(edtItemName.Text).State(FStateItem)
+      .Description(memDescription.Text).TypeItem(DefaultText(lblType.Text))
+      .Container(nbBoxIndex.Text.ToInteger);
+
+    if isNewOperation then
+    begin
+      Add;
+      SetStateOperation(False);
+       TConcreteMSBox.NewMessage.ShowInformationMSG('Registro Adicionado com sucesso!');
+    end
+    else
+    begin
+      Edit;
+      TConcreteMSBox.NewMessage.ShowInformationMSG('Registro Alterado com sucesso!');
+    end;
+  end;
+
+  RenderList(Classitem.GetQuery);
+end;
+
+procedure TfrmStock.ChangeitemStateColor(Componente: TCircle);
+var
+  I: Integer;
+begin
+  for I := 0 to ComponentCount - 1 do
+  begin
+    if (Components[I] is TCircle) then
+    begin
+      if (Components[I] as TCircle).Name = Componente.Name then
+      begin
+        SetComponentItemState(Componente);
+      end
+      else
+      begin
+        (Components[I] as TCircle).Stroke.Thickness := 0;
+      end;
+    end;
+  end;
+
+end;
+
+procedure TfrmStock.ClearFields;
+begin
+  memDescription.Text := '';
+  edtItemName.Text := '';
+  nbBoxIndex.Text := '0';
+end;
+
+procedure TfrmStock.ClearList;
+var
+  I: Integer;
+begin
+  try
+    vbListContent.BeginUpdate;
+    for I := vbListContent.Content.ChildrenCount - 1 downto 0 do
+      if vbListContent.Content.Children[I] is TFrame then
+        TFrame(vbListContent.Content.Children[I]).DisposeOf;
+  finally
+    vbListContent.EndUpdate;
+  end;
+end;
+
+procedure TfrmStock.clNotTestingClick(Sender: TObject);
+begin
+  ChangeitemStateColor(clNotTesting);
+  FStateItem := 'Usado';
+end;
+
+procedure TfrmStock.clNotWorkClick(Sender: TObject);
+begin
+  ChangeitemStateColor(clNotWork);
+  FStateItem := 'Não Descritivo';
+end;
+
+procedure TfrmStock.CloseContentFinish(Sender: TObject);
+begin
+  RenderHeaders;
+end;
+
+procedure TfrmStock.clWorkingClick(Sender: TObject);
+begin
+  ChangeitemStateColor(clWorking);
+  FStateItem := 'Novo';
+end;
+
+procedure TfrmStock.edtSearchChange(Sender: TObject);
+begin
+  if edtSearch.Text = '' then
+    RenderList(Classitem.GetQuery);
+end;
+
+procedure TfrmStock.edtSearchKeyDown(Sender: TObject; var Key: Word;
+  var KeyChar: Char; Shift: TShiftState);
+begin
+  if Key = 13 then
+    RenderList(Classitem.GetQuery(edtSearch.Text));
+end;
+
+procedure TfrmStock.FormCreate(Sender: TObject);
+begin
+  MountTypesArray;
+end;
+
+procedure TfrmStock.FormShow(Sender: TObject);
+begin
+  Classitem := TControllerItem.Create;
+  recContentInfo.Width := 0;
+  RenderHeaders;
+  RenderList(Classitem.GetQuery);
+end;
+
+function TfrmStock.GetTypeItemPos: Integer;
+var
+  I: Integer;
+begin
+
+  for I := 0 to 3 do
+  begin
+    if lblType.Text = Types[I] then
+    begin
+      Result := I;
+      break
+    end;
+  end;
+
+end;
+
+procedure TfrmStock.Image1Click(Sender: TObject);
+begin
+  NexType;
+end;
+
+procedure TfrmStock.Image2Click(Sender: TObject);
+begin
+  PreviType;
+end;
+
+procedure TfrmStock.imgCloseInfoClick(Sender: TObject);
+begin
+  CloseContent.Start;
+  SetStateOperation(False);
+  UpdateEffect;
+end;
+
+procedure TfrmStock.imgDeleteClick(Sender: TObject);
+begin
+
+ if TConcreteMSBox.NewMessage.ShowDecisionMSG('Deseja Deletar o Esse Registro?') then begin
+
+  Classitem.ID(FItemIDSelected).Remove;
+  TConcreteMSBox.NewMessage.ShowInformationMSG('Registro Deletado com sucesso!');
+  CloseContent.Start;
+  RenderList(Classitem.GetQuery);
+ end;
+end;
+
+function TfrmStock.isNewOperation: Boolean;
+begin
+  Result := FCrudOperation;
+end;
+
+function TfrmStock.ItemStateStrToStateComponent(ItemState: String): TCircle;
+begin
+  case IndexStr(ItemState, ['Novo', 'Usado', 'Não Descritivo']) of
+    0:
+      Result := clWorking;
+    1:
+      Result := clNotTesting;
+    2:
+      Result := clNotWork;
+  end;
+end;
+
+procedure TfrmStock.LoadInfoItem(_ID: Integer);
+begin
+  with Classitem.GetValuesByID(_ID) do
+  begin
+    edtItemName.Text := ItemName;
+    lblType.Text := UpperCase(TypeItem);
+    nbBoxIndex.Text := IntToStr(Container);
+    memDescription.Text := Description;
+    ChangeitemStateColor(ItemStateStrToStateComponent(State));
+    SetImageType(lblType.Text);
+     FStateItem := State;
+  end;
+end;
+
+procedure TfrmStock.MountTypesArray;
+begin
+  Types[0] := 'HARDWARE';
+  Types[1] := 'DEVICES';
+  Types[2] := 'CABLES';
+  Types[3] := 'OTHERS';
+end;
+
+procedure TfrmStock.NexType;
+var
+  TypePos: Integer;
+begin
+  TypePos := GetTypeItemPos;
+
+  if TypePos = 3 then
+    TypePos := 0
+  else
+    Inc(TypePos);
+
+  lblType.Text := Types[TypePos];
+  SetImageType(lblType.Text);
+end;
+
+procedure TfrmStock.PreviType;
+var
+  TypePos: Integer;
+begin
+  TypePos := GetTypeItemPos;
+
+  if TypePos = 0 then
+    TypePos := 3
+  else
+    Dec(TypePos);
+
+  lblType.Text := Types[TypePos];
+  SetImageType(lblType.Text);
+end;
+
+procedure TfrmStock.RenderList(QueryToRender: TFDQuery);
+var
+  I: Integer;
+  Row: TframeRow;
+begin
+  ClearList;
+
+  vbListContent.BeginUpdate;
+
+  with QueryToRender do
+  begin
+    for I := 0 to RecordCount - 1 do
+    begin
+
+      Row := TframeRow.Create(nil);
+
+      with Row do
+      begin
+        ItemName.Text := FieldByName('ITEMNAME').Text;
+        NumBox.Text := FieldByName('CONTAINER').Text;
+        ItemState.Text := FieldByName('STATE').Text;
+        ItemType.Text := FieldByName('TYPES').Text;
+        ItemID := FieldByName('ID').AsInteger;
+
+        recBaseType.Fill.Color := TypeToColor(FieldByName('TYPES').Text);
+        clState.Fill.Color := StateToColor(FieldByName('STATE').Text);
+
+        EventDBClick := RowEventClick;
+      end;
+
+      vbListContent.AddObject(Row);
+
+      Next;
+    end;
+
+  end;
+
+  vbListContent.EndUpdate;
+  UpdateEffect;
+end;
+
+procedure TfrmStock.RenderHeaders;
+var
+  NewWidth: Single;
+begin
+  vbListContent.BeginUpdate;
+  NewWidth := ltListTitles.Width / 4;
+  TitleItem.Width := NewWidth;
+  TitleBoxNum.Width := NewWidth;
+  TitleItemState.Width := NewWidth;
+  TitleType.Width := NewWidth;
+  vbListContent.EndUpdate;
+end;
+
+procedure TfrmStock.RowEventClick(_Index: Integer);
+begin
+  LoadInfoItem(_Index);
+  FItemIDSelected := _Index;
+
+  SetStateOperation(False);
+
+  if recContentInfo.Width = 0 then
+    ShowContent.Start;
+end;
+
+procedure TfrmStock.SetComponentItemState(State: TCircle);
+begin
+  with State do
+  begin
+    Stroke.Thickness := 3;
+    Stroke.Color := $FF5248E3;
+  end;
+end;
+
+procedure TfrmStock.SetImageType(ItemType: String);
+  function ApplicationPath: String;
+  begin
+    Result := ExtractFilePath(ParamStr(0)) + '\Sources\';
+  end;
+
+begin
+  case IndexStr(ItemType, Types) of
+    0:
+      imgType.Bitmap.LoadFromFile(ApplicationPath + 'Hardware.png');
+    1:
+      imgType.Bitmap.LoadFromFile(ApplicationPath + 'Devices.png');
+    2:
+      imgType.Bitmap.LoadFromFile(ApplicationPath + 'Cables.png');
+    3:
+      imgType.Bitmap.LoadFromFile(ApplicationPath + 'Others.png');
+  end;
+end;
+
+procedure TfrmStock.SetStateOperation(OPValue: Boolean);
+begin
+  FCrudOperation := OPValue;
+
+  txAdd.Enabled := not OPValue;
+end;
+
+procedure TfrmStock.ShowContentFinish(Sender: TObject);
+begin
+  RenderHeaders;
+end;
+
+function TfrmStock.StateToColor(_State: String): TAlphaColor;
+begin
+  case IndexStr(_State, ['Novo', 'Usado', 'Não Descritivo']) of
+    0:
+      Result := $FF37AC3B;
+    1:
+      Result := $FFB9AE4D;
+    2:
+      Result := $FFC92929;
+  end;
+end;
+
+procedure TfrmStock.txAddClick(Sender: TObject);
+begin
+  SetStateOperation(True);
+
+  ClearFields;
+
+  if recContentInfo.Width = 0 then
+    ShowContent.Start;
+end;
+
+function TfrmStock.TypeToColor(_Type: String): TAlphaColor;
+begin
+  case IndexStr(_Type, ['Hardware', 'Cables', 'Devices', 'Others']) of
+    0:
+      Result := $FFD3975F;
+    1:
+      Result := $FF4E72CF;
+    2:
+      Result := $FF7BBD71;
+    3:
+      Result := $FF868686;
+  end;
+end;
+
+procedure TfrmStock.UpdateEffect;
+begin
+  recUpdate.Visible := True;
+ TThread.CreateAnonymousThread(
+  procedure
+  begin
+   Sleep(200);
+    TThread.Synchronize(
+      TThread.Current,
+      procedure
+      begin
+         recUpdate.Visible := False;
+         vbListContent.Repaint;
+      end
+    )
+  end).Start;
+end;
+
+procedure TfrmStock.vbListContentPaint(Sender: TObject; Canvas: TCanvas;
+  const ARect: TRectF);
+begin
+ vbListContent.RealignContent;
+end;
+
+end.

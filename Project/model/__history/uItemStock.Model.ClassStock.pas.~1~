@@ -1,0 +1,15 @@
+unit uItemStock.Model.ClassStock;
+
+interface
+
+uses
+  uItemStock.Model.Interfaces;
+
+  type
+    TStockItem = class (TInterfacedObject, IStockItem)
+
+    end;
+
+implementation
+
+end.

@@ -1,0 +1,17 @@
+unit uItemStock.Controller.Settings;
+
+interface
+   uses uItemStock.Controller.Interfaces;
+
+  type
+  TControllSettings = class(TInterfacedObject,IControllSettings)
+    private
+
+    public
+  end;
+
+implementation
+
+uses uItemStock.Model.ClassSettings, uItemStock.Model.InterfaceSettings;
+
+end.

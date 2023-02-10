@@ -1,0 +1,154 @@
+unit uItemStock.Dao.Instruction;
+
+interface
+
+uses
+  uItemStock.Model.ClassItem, uItemStock.Dao.Interfaces, FireDAC.Comp.Client,
+  System.JSON, uItemStock.Dao.DataModule;
+
+type
+
+  TDaoIntructions = class(TInterfacedObject, IDaoInstruction)
+  private
+    FItens: TItem;
+    FQuery: TFDQuery;
+    FQueryView : TFDQuery;
+    _data: TdmDados;
+    MyConnection: TFDConnection;
+  public
+    constructor Create; overload;
+    constructor Create(MyIten: TItem); overload;
+    destructor Destroy; override;
+    class function NewInstruction(MyClassItem: TItem): IDaoInstruction;
+    procedure InsertItem;
+    procedure UpdateItem;
+    procedure DeleteItem;
+    function GetValuesByID(_ID: Integer): TItemValues;
+    function GetQuery : TFDQuery;
+  end;
+
+implementation
+
+uses
+  System.SysUtils;
+
+{ TDaoIntructions }
+constructor TDaoIntructions.Create(MyIten: TItem);
+begin
+  FItens := MyIten;
+  FQueryView :=  TFDQuery.Create(nil);
+  FQuery := TFDQuery.Create(nil);
+  _data := TdmDados.Create(nil);
+  MyConnection := _data.Connection;
+  FQuery.Connection := MyConnection;
+  FQueryView.Connection := MyConnection;
+end;
+
+constructor TDaoIntructions.Create;
+begin
+  FQuery := TFDQuery.Create(nil);
+  _data := TdmDados.Create(nil);
+  MyConnection := _data.Connection;
+  FQuery.Connection := MyConnection;
+end;
+
+procedure TDaoIntructions.DeleteItem;
+begin
+  with FQuery do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add('DELETE FROM ITENS WHERE ID = :id');
+    ParamByName('id').AsInteger := FItens.ID;
+    ExecSQL;
+  end;
+end;
+
+destructor TDaoIntructions.Destroy;
+begin
+  MyConnection.Free;
+  FQueryView.Free;
+  FQuery.Free;
+  _data.Free;
+  inherited;
+end;
+
+function TDaoIntructions.GetValuesByID(_ID: Integer): TItemValues;
+var
+  TempValue: TItemValues;
+begin
+  with FQuery do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add('SELECT * FROM ITENS WHERE ID = :id');
+    ParamByName('id').AsInteger := _ID;
+    Open;
+
+    with TempValue do
+    begin
+      ID := FieldByName('ID').AsInteger;
+      Container := FieldByName('CONTAINER').AsInteger;
+      ItemName := FieldByName('ITEMNAME').Text;
+      State := FieldByName('STATE').Text;
+      Description := FieldByName('DESCRIPTION').Text;
+      TypeItem := FieldByName('TYPES').Text;
+    end;
+
+  end;
+
+  Result := TempValue;
+end;
+
+procedure TDaoIntructions.InsertItem;
+begin
+  with FQuery do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add('INSERT INTO ITENS (ITEMNAME, STATE, DESCRIPTION, TYPES, CONTAINER, PATH) '
+      + 'VALUES (:name, :state, :des , :type , :cont , :path)');
+    with FItens do
+    begin
+      ParamByName('name').AsString := Item;
+      ParamByName('state').AsString := State;
+      ParamByName('des').AsString := Description;
+      ParamByName('type').AsString := TypeItem;
+      ParamByName('cont').AsInteger := Container;
+      ParamByName('path').AsString := PicturePath;
+    end;
+    ExecSQL;
+  end;
+end;
+
+class function TDaoIntructions.NewInstruction(MyClassItem: TItem)
+  : IDaoInstruction;
+begin
+  Result := TDaoIntructions.Create(MyClassItem);
+end;
+
+
+procedure TDaoIntructions.UpdateItem;
+begin
+  with FQuery do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Add('UPDATE ITENS  SET ITEMNAME = :name, STATE = :state, ' +
+      ' DESCRIPTION = :desc ,TYPES = :type,  CONTAINER = :cont, PATH = :path ' +
+      'WHERE ID = :id');
+    with FItens do
+    begin
+      ParamByName('id').AsInteger := ID;
+      ParamByName('name').AsString := Item;
+      ParamByName('state').AsString := State;
+      ParamByName('desc').AsString := Description;
+      ParamByName('type').AsString := TypeItem;
+      ParamByName('cont').AsInteger := Container;
+      ParamByName('path').AsString := PicturePath;
+    end;
+    ExecSQL;
+  end;
+end;
+
+end.

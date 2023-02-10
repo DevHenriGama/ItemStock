@@ -1,0 +1,68 @@
+object ApiData: TApiData
+  OnCreate = ServerMethodDataModuleCreate
+  Encoding = esUtf8
+  QueuedRequest = False
+  Height = 381
+  Width = 425
+  object EventsMain: TDWServerEvents
+    IgnoreInvalidParams = False
+    Events = <
+      item
+        Routes = [crGet]
+        NeedAuthorization = True
+        DWParams = <>
+        JsonMode = jmPureJSON
+        Name = 'status'
+        EventName = 'status'
+        OnlyPreDefinedParams = False
+        OnReplyEvent = EventsMainEventsstatusReplyEvent
+      end
+      item
+        Routes = [crAll]
+        NeedAuthorization = False
+        DWParams = <
+          item
+            TypeObject = toParam
+            ObjectDirection = odIN
+            ObjectValue = ovString
+            ParamName = 'item'
+            Encoded = True
+          end
+          item
+            TypeObject = toParam
+            ObjectDirection = odIN
+            ObjectValue = ovString
+            ParamName = 'state'
+            Encoded = True
+          end
+          item
+            TypeObject = toParam
+            ObjectDirection = odINOUT
+            ObjectValue = ovString
+            ParamName = 'desc'
+            Encoded = True
+          end
+          item
+            TypeObject = toParam
+            ObjectDirection = odIN
+            ObjectValue = ovString
+            ParamName = 'container'
+            Encoded = True
+          end
+          item
+            TypeObject = toParam
+            ObjectDirection = odINOUT
+            ObjectValue = ovString
+            ParamName = 'type'
+            Encoded = True
+          end>
+        JsonMode = jmPureJSON
+        Name = 'new'
+        EventName = 'new'
+        OnlyPreDefinedParams = False
+        OnReplyEvent = EventsMainEventsnewReplyEvent
+      end>
+    Left = 208
+    Top = 192
+  end
+end

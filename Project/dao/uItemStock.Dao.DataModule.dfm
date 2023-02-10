@@ -1,0 +1,27 @@
+object dmDados: TdmDados
+  Height = 201
+  Width = 389
+  PixelsPerInch = 96
+  object Connection: TFDConnection
+    Params.Strings = (
+      
+        'Database=C:\Users\darke\Desktop\ItemStock2.1\dao\database\ITEMST' +
+        'OCKDB.FDB'
+      'User_Name=SYSDBA'
+      'Password=masterkey'
+      'DriverID=FB')
+    Connected = True
+    LoginPrompt = False
+    BeforeConnect = ConnectionBeforeConnect
+    Left = 136
+    Top = 72
+  end
+  object queryTypePersitant: TFDQuery
+    Active = True
+    Connection = Connection
+    SQL.Strings = (
+      'SELECT * FROM ITENS')
+    Left = 240
+    Top = 80
+  end
+end

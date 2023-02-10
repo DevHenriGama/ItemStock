@@ -1,0 +1,151 @@
+unit uItemStock.Dao.TypeInstuction;
+
+interface
+
+
+uses uItemStock.Dao.Interfaces,uItemStock.Dao.DataModule, FireDAC.Comp.Client,
+  uItemStock.Model.ClassType, System.Classes;
+
+
+  type
+
+  TDAOTypesInstructon = class(TInterfacedObject,IDAOTypesInstruction)
+    private
+        _data : TdmDados;
+        FQuery : TFDQuery;
+        Connection : TFDConnection;
+        Types : TTypesModel;
+        FListTypes : TStringList;
+    public
+      constructor Create(TypesModel : TTypesModel);overload;
+      constructor Create;overload;
+      destructor Destroy;Override;
+      function NewType : Boolean;
+      function EditType : Boolean;
+      function DeleteType : Boolean;
+      function GetDataSet : TFDQuery;
+      procedure SearchType(_Value : String);
+      function GetListAllTypes : TStringList;
+
+
+  end;
+
+implementation
+
+uses System.SysUtils;
+
+
+{ TDAOTypesInstructon }
+
+constructor TDAOTypesInstructon.Create(TypesModel: TTypesModel);
+begin
+  _data := TdmDados.Create(nil);
+  FQuery := TFDQuery.Create(nil);
+  FQuery.Connection := _data.Connection;
+  Types := TypesModel;
+  FListTypes := TStringList.Create;
+end;
+
+constructor TDAOTypesInstructon.Create;
+begin
+ _data := TdmDados.Create(nil);
+ FListTypes := TStringList.Create;
+ FQuery := TFDQuery.Create(nil);
+ FQuery.Connection := _data.Connection;
+end;
+
+function TDAOTypesInstructon.DeleteType : Boolean;
+begin
+  try
+       with FQuery do begin
+     Close;
+     SQL.Clear;
+     SQL.Add('DELETE FROM ITEM_TYPES WHERE ID = :id');
+     ParamByName('id').AsInteger := Types.GetID;
+     ExecSQL;
+   end;
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+destructor TDAOTypesInstructon.Destroy;
+begin
+   FQuery.Free;
+   _data.Free;
+   FListTypes.Free;
+  inherited;
+end;
+
+function TDAOTypesInstructon.EditType : Boolean;
+begin
+ try
+   with FQuery do begin
+    Close;
+    SQL.Clear;
+    SQL.Add('UPDATE ITEM_TYPES SET TYPE = :ty WHERE ID = :id');
+    ParamByName('ty').AsString  := Types.GetTypes;
+    ParamByName('id').AsInteger := Types.GetID;
+    ExecSQL;
+   end;
+   Result := True;
+ except
+    Result := False;
+ end;
+end;
+
+function TDAOTypesInstructon.GetDataSet: TFDQuery;
+begin
+  Result :=  _data.queryTypePersitant;
+end;
+
+function TDAOTypesInstructon.GetListAllTypes: TStringList;
+var
+  I: Integer;
+begin
+  with FQuery do begin
+    Close;
+    SQL.Clear;
+    SQL.Add('SELECT * FROM ITEM_TYPES');
+    Open;
+
+      if RecordCount > 0  then begin
+        for I := 0 to RecordCount - 1 do begin
+           FListTypes.Add(FieldByName('TYPE').Text);
+           if not EoF then
+            Next;
+        end;
+      end;
+
+  end;
+  Result := FListTypes;
+end;
+
+function TDAOTypesInstructon.NewType: Boolean;
+begin
+  try
+   with FQuery do begin
+    Close;
+    SQL.Clear;
+    SQL.Add('INSERT INTO ITEM_TYPES (TYPE) VALUES (:ty)');
+    ParamByName('ty').AsString  := Types.GetTypes;
+    ExecSQL;
+   end;
+   Result := True;
+ except
+    Result := False;
+ end;
+end;
+
+procedure TDAOTypesInstructon.SearchType(_Value: String);
+begin
+ with _data.queryTypePersitant do begin
+  close;
+  SQL.Clear;
+  SQL.Add('SELECT TYPE FROM ITEM_TYPES WHERE TYPE LIKE ' + QuotedStr('%'+_Value+'%'));
+  Open;
+ end;
+end;
+
+end.

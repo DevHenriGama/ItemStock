@@ -1,0 +1,64 @@
+unit uItemStock.Model.ClassType;
+
+interface
+
+uses uItemStock.Model.Interfaces;
+
+  type
+    TTypesModel = class(TInterfacedObject,iTypesModel)
+
+    private
+      FID : Integer;
+      FType : String;
+    public
+      class function New : iTypesModel;
+      function SetID(_Value : Integer) : iTypesModel;
+      function SetTypes(_Value : String) : iTypesModel;
+      function GetID : Integer;
+      function GetTypes : String;
+      constructor Create;
+      destructor Destroy; Override;
+
+    end;
+
+implementation
+
+{ TTypesModel }
+
+constructor TTypesModel.Create;
+begin
+
+end;
+
+destructor TTypesModel.Destroy;
+begin
+
+  inherited;
+end;
+
+function TTypesModel.GetID: Integer;
+begin
+
+end;
+
+function TTypesModel.GetTypes: String;
+begin
+
+end;
+
+function TTypesModel.SetID(_Value: Integer): iTypesModel;
+begin
+
+end;
+
+class function TTypesModel.New: iTypesModel;
+begin
+   Result := Self.Create;
+end;
+
+function TTypesModel.SetTypes(_Value: String): iTypesModel;
+begin
+
+end;
+
+end.

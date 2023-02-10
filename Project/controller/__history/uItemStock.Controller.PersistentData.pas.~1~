@@ -1,0 +1,16 @@
+unit uItemStock.Controller.PersistentData;
+
+interface
+
+  type
+    TPersistentDataControll = class(TInterfacedObject, IPersistentData)
+    private
+
+    public
+
+
+    end;
+
+implementation
+
+end.
